@@ -4,32 +4,186 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stratagem: Tactical Realms</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            border: 2px solid #333;
+            background-color: #fff;
+        }
+        .square {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .white-square {
+            background-color: #f0d9b5;
+        }
+        .black-square {
+            background-color: #b58863;
+        }
+        .piece {
+            font-size: 40px;
+            user-select: none;
+        }
+        #game-info {
+            margin-left: 20px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <header>
-            <h1>Stratagem: Tactical Realms</h1>
-            <div class="game-stats">
-                <span id="player-resources">Resources: 100</span>
-                <span id="turn-counter">Turn: 1</span>
-            </div>
-        </header>
-
-        <div class="game-board" id="gameBoard"></div>
-
-        <div class="game-controls">
-            <button id="startGameBtn">Start New Game</button>
-            <button id="analyzeBtn">Analyze Performance</button>
-        </div>
-
-        <div class="analytics-panel" id="analyticsPanel">
-            <h2>Game Analytics</h2>
-            <div id="performanceMetrics"></div>
-        </div>
+    <div id="game-board"></div>
+    <div id="game-info">
+        <h2>Stratagem: Tactical Realms</h2>
+        <p>Current Turn: <span id="current-turn">White</span></p>
+        <p>Moves: <span id="move-count">0</span></p>
     </div>
 
-    <script src="analytics.js"></script>
-    <script src="game.js"></script>
+    <script>
+        class ChessGame {
+            constructor() {
+                this.board = [];
+                this.currentPlayer = 'white';
+                this.selectedPiece = null;
+                this.initializeBoard();
+                this.renderBoard();
+                this.moveCount = 0;
+            }
+
+            initializeBoard() {
+                const pieces = {
+                    white: ['♔', '♕', '♖', '♗', '♘', '♙'],
+                    black: ['♚', '♛', '♜', '♝', '♞', '♟']
+                };
+
+                // Initialize empty board
+                for (let row = 0; row < 8; row++) {
+                    this.board[row] = [];
+                    for (let col = 0; col < 8; col++) {
+                        this.board[row][col] = null;
+                    }
+                }
+
+                // Place white pieces
+                this.board[7][0] = { type: 'rook', color: 'white', symbol: pieces.white[2] };
+                this.board[7][1] = { type: 'knight', color: 'white', symbol: pieces.white[4] };
+                this.board[7][2] = { type: 'bishop', color: 'white', symbol: pieces.white[3] };
+                this.board[7][3] = { type: 'queen', color: 'white', symbol: pieces.white[1] };
+                this.board[7][4] = { type: 'king', color: 'white', symbol: pieces.white[0] };
+                this.board[7][5] = { type: 'bishop', color: 'white', symbol: pieces.white[3] };
+                this.board[7][6] = { type: 'knight', color: 'white', symbol: pieces.white[4] };
+                this.board[7][7] = { type: 'rook', color: 'white', symbol: pieces.white[2] };
+                
+                // White pawns
+                for (let col = 0; col < 8; col++) {
+                    this.board[6][col] = { type: 'pawn', color: 'white', symbol: pieces.white[5] };
+                }
+
+                // Place black pieces
+                this.board[0][0] = { type: 'rook', color: 'black', symbol: pieces.black[2] };
+                this.board[0][1] = { type: 'knight', color: 'black', symbol: pieces.black[4] };
+                this.board[0][2] = { type: 'bishop', color: 'black', symbol: pieces.black[3] };
+                this.board[0][3] = { type: 'queen', color: 'black', symbol: pieces.black[1] };
+                this.board[0][4] = { type: 'king', color: 'black', symbol: pieces.black[0] };
+                this.board[0][5] = { type: 'bishop', color: 'black', symbol: pieces.black[3] };
+                this.board[0][6] = { type: 'knight', color: 'black', symbol: pieces.black[4] };
+                this.board[0][7] = { type: 'rook', color: 'black', symbol: pieces.black[2] };
+                
+                // Black pawns
+                for (let col = 0; col < 8; col++) {
+                    this.board[1][col] = { type: 'pawn', color: 'black', symbol: pieces.black[5] };
+                }
+            }
+
+            renderBoard() {
+                const gameBoard = document.getElementById('game-board');
+                gameBoard.innerHTML = ''; // Clear previous board
+
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.classList.add('square');
+                        
+                        // Alternate square colors
+                        square.classList.add((row + col) % 2 === 0 ? 'white-square' : 'black-square');
+                        
+                        // Set data attributes for identification
+                        square.dataset.row = row;
+                        square.dataset.col = col;
+
+                        // Add piece if exists
+                        const piece = this.board[row][col];
+                        if (piece) {
+                            const pieceElement = document.createElement('div');
+                            pieceElement.classList.add('piece');
+                            pieceElement.textContent = piece.symbol;
+                            pieceElement.dataset.color = piece.color;
+                            square.appendChild(pieceElement);
+                        }
+
+                        // Add click event
+                        square.addEventListener('click', () => this.handleSquareClick(row, col));
+                        
+                        gameBoard.appendChild(square);
+                    }
+                }
+            }
+
+            handleSquareClick(row, col) {
+                const clickedPiece = this.board[row][col];
+                
+                // If no piece selected yet
+                if (!this.selectedPiece) {
+                    if (clickedPiece && clickedPiece.color === this.currentPlayer) {
+                        this.selectedPiece = { row, col };
+                        // Optional: Highlight selected piece
+                    }
+                    return;
+                }
+
+                // If clicking the same piece, deselect
+                if (this.selectedPiece.row === row && this.selectedPiece.col === col) {
+                    this.selectedPiece = null;
+                    return;
+                }
+
+                // Move piece (very basic movement for now)
+                this.board[row][col] = this.board[this.selectedPiece.row][this.selectedPiece.col];
+                this.board[this.selectedPiece.row][this.selectedPiece.col] = null;
+
+                // Switch turn
+                this.currentPlayer = this.currentPlayer === 'white' ? 'black' : 'white';
+                
+                // Update move count and turn display
+                this.moveCount++;
+                document.getElementById('current-turn').textContent = this.currentPlayer;
+                document.getElementById('move-count').textContent = this.moveCount;
+
+                // Re-render board
+                this.renderBoard();
+
+                // Reset selected piece
+                this.selectedPiece = null;
+            }
+        }
+
+        // Initialize game when page loads
+        const game = new ChessGame();
+    </script>
 </body>
 </html>
