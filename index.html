@@ -3,44 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tactical Realms: Chess</title>
+    <title>Tactical Realms: Chess Warfare</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="game-container">
+    <div class="tactical-container">
         <div class="game-header">
-            <h1>Tactical Realms: Chess</h1>
-            <div class="game-stats">
-                <div id="game-turn">Current Turn: White</div>
-                <div id="move-count">Moves: 0</div>
+            <h1>Tactical Realms</h1>
+            <div class="game-info">
+                <div id="turn-display" class="turn-indicator">White's Turn</div>
+                <div id="move-counter">Moves: 0</div>
             </div>
         </div>
-        
-        <div class="game-board-container">
-            <div id="captured-pieces-white" class="captured-pieces white">
-                <h3>White Captured</h3>
-                <div class="pieces-list"></div>
-            </div>
-            
-            <div class="chess-board" id="chessboard"></div>
-            
-            <div id="captured-pieces-black" class="captured-pieces black">
-                <h3>Black Captured</h3>
-                <div class="pieces-list"></div>
-            </div>
-        </div>
-        
-        <div class="game-controls">
-            <button id="restart-game">Restart Game</button>
-            <div id="game-status"></div>
-        </div>
-    </div>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2 id="modal-title">Game Over</h2>
-            <p id="modal-message"></p>
-            <button id="modal-restart">Play Again</button>
+        <div class="battlefield">
+            <div class="player-zone white-zone">
+                <div class="captured-pieces white-captured"></div>
+            </div>
+
+            <div class="chess-board" id="chessboard"></div>
+
+            <div class="player-zone black-zone">
+                <div class="captured-pieces black-captured"></div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button id="restart-btn" class="tactical-btn">Restart Battle</button>
+            <button id="redo-btn" class="tactical-btn">Redo Move</button>
+        </div>
+
+        <div id="game-over-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="winner-text">Battle Concluded</h2>
+                <p id="game-result"></p>
+                <div class="modal-actions">
+                    <button id="modal-restart" class="tactical-btn">New Campaign</button>
+                </div>
+            </div>
         </div>
     </div>
 
