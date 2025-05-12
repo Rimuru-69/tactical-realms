@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stratagem: Tactical Realms</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Stratagem: Tactical Realms</h1>
+            <div class="game-stats">
+                <span id="player-resources">Resources: 100</span>
+                <span id="turn-counter">Turn: 1</span>
+            </div>
+        </header>
+
+        <div class="game-board" id="gameBoard"></div>
+
+        <div class="game-controls">
+            <button id="startGameBtn">Start New Game</button>
+            <button id="analyzeBtn">Analyze Performance</button>
+        </div>
+
+        <div class="analytics-panel" id="analyticsPanel">
+            <h2>Game Analytics</h2>
+            <div id="performanceMetrics"></div>
+        </div>
+    </div>
+
+    <script src="analytics.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
