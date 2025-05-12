@@ -1,57 +1,67 @@
-// Analytics tracking for Tactical Realms Chess
 class GameAnalytics {
     constructor() {
-        this.gameStats = {
-            totalGames: 0,
+        this.initializeAnalytics();
+    }
+
+    initializeAnalytics() {
+        // Initialize local storage for game statistics
+        if (!localStorage.getItem('chessGameStats')) {
+            this.resetAnalytics();
+        }
+    }
+
+    resetAnalytics() {
+        const defaultStats = {
+            totalGamesPlayed: 0,
             whiteWins: 0,
             blackWins: 0,
             averageMoves: 0,
-            longestGame: 0
+            totalMoves: 0
         };
-        this.loadStats();
+        localStorage.setItem('chessGameStats', JSON.stringify(defaultStats));
     }
 
-    // Save game statistics to local storage
-    saveStats() {
-        localStorage.setItem('tacticalRealmsStats', JSON.stringify(this.gameStats));
-    }
-
-    // Load game statistics from local storage
-    loadStats() {
-        const savedStats = localStorage.getItem('tacticalRealmsStats');
-        if (savedStats) {
-            this.gameStats = JSON.parse(savedStats);
-        }
-    }
-
-    // Track game completion
-    trackGameCompletion(winner, moves) {
-        this.gameStats.totalGames++;
+    recordGameOutcome(winner, moves) {
+        const stats = this.getStats();
         
+        stats.totalGamesPlayed++;
         if (winner === 'white') {
-            this.gameStats.whiteWins++;
+            stats.whiteWins++;
         } else {
-            this.gameStats.blackWins++;
+            stats.blackWins++;
         }
 
         // Update average moves
-        this.gameStats.averageMoves = (
-            (this.gameStats.averageMoves * (this.gameStats.totalGames - 1) + moves) / 
-            this.gameStats.totalGames
-        );
+        stats.totalMoves += moves;
+        stats.averageMoves = Math.round(stats.totalMoves / stats.totalGamesPlayed);
 
-        // Update longest game
-        this.gameStats.longestGame = Math.max(this.gameStats.longestGame, moves);
-
-        this.saveStats();
-        this.displayStats();
+        // Save updated stats
+        localStorage.setItem('chessGameStats', JSON.stringify(stats));
     }
 
-    // Display game statistics (optional - can be expanded)
+    getStats() {
+        const statsString = localStorage.getItem('chessGameStats');
+        return statsString ? JSON.parse(statsString) : this.resetAnalytics();
+    }
+
     displayStats() {
-        console.log('Tactical Realms Chess Stats:', this.gameStats);
+        const stats = this.getStats();
+        console.log('Game Statistics:', stats);
+        
+        // Optional: Update UI with game statistics
+        const statsDisplay = document.getElementById('game-stats');
+        if (statsDisplay) {
+            statsDisplay.innerHTML = `
+                <p>Total Games: ${stats.totalGamesPlayed}</p>
+                <p>White Wins: ${stats.whiteWins}</p>
+                <p>Black Wins: ${stats.blackWins}</p>
+                <p>Avg Moves per Game: ${stats.averageMoves}</p>
+            `;
+        }
     }
 }
 
-// Initialize analytics when the script loads
-const gameAnalytics = new GameAnalytics();
+// Create a singleton instance of GameAnalytics
+window.gameAnalytics = new GameAnalytics();
+
+export default GameAnalytics;

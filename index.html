@@ -3,29 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tactical Realms: Strategic Chess</title>
+    <title>Tactical Realms: Chess</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="game-container">
-        <div class="player-panel">
-            <div class="player-info white-player">
-                <span>White Player</span>
-                <div class="captured-pieces white-captured"></div>
-            </div>
-            <div class="player-info black-player">
-                <span>Black Player</span>
-                <div class="captured-pieces black-captured"></div>
+        <div class="game-header">
+            <h1>Tactical Realms: Chess</h1>
+            <div class="game-stats">
+                <div id="game-turn">Current Turn: White</div>
+                <div id="move-count">Moves: 0</div>
             </div>
         </div>
-        <div id="game-board"></div>
-        <div id="game-info">
-            <div id="game-status">Tactical Realms: Chess Battle</div>
-            <button id="restart-btn">Restart Campaign</button>
+        
+        <div class="game-board-container">
+            <div id="captured-pieces-white" class="captured-pieces white">
+                <h3>White Captured</h3>
+                <div class="pieces-list"></div>
+            </div>
+            
+            <div class="chess-board" id="chessboard"></div>
+            
+            <div id="captured-pieces-black" class="captured-pieces black">
+                <h3>Black Captured</h3>
+                <div class="pieces-list"></div>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button id="restart-game">Restart Game</button>
+            <div id="game-status"></div>
         </div>
     </div>
 
-    <script src="game.js"></script>
-    <script src="analytics.js"></script>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Game Over</h2>
+            <p id="modal-message"></p>
+            <button id="modal-restart">Play Again</button>
+        </div>
+    </div>
+
+    <script type="module" src="game.js"></script>
+    <script type="module" src="analytics.js"></script>
 </body>
 </html>
